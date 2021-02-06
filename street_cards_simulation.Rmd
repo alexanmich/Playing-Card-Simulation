@@ -1,0 +1,65 @@
+---
+title: "Street Playing Card Simulation Problem"
+author: "Michelle Alexander"
+date: "30/01/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The Problem
+
+Over the past four years I have collected playing cards I found on the street. In this time I have collected 16 of unique suit and value, and 18 total cards. The goal is to find a unique 54 card deck. I want to know how many cards I should expect to pick up to find a full unique deck.
+
+I am going to simulate multiple runs of picking up random cards until a full unique (54) deck is found to find an expected number of cards to find. 
+
+
+## The Simulation
+```{r}
+n <- 10000 # number of simulations
+set.seed(1234) 
+full_deck <- 1:54 
+
+sim_results <- c()
+
+# run the simulation n times
+for(x in seq(1, n)){
+  card_count <- 0 # number cards found
+  cards_found <- rep(FALSE, 54)
+  # pick up cards until a unique deck is found, or reaches cap of 1000
+  while (FALSE %in% cards_found & card_count < 1000){
+    card <- sample(full_deck, size=1, replace=TRUE) # pick up a random card
+    cards_found[card] <- TRUE # mark this card as found
+    card_count <- card_count + 1
+  }
+  # add the count of cards picked up (unless it reached the cap)
+  if(card_count < 1000){
+    sim_results <- append(sim_results, card_count)
+  }
+}
+
+head(sim_results)
+```  
+
+## Basic Stats
+```{r}
+# Checking if any runs reached the cap of 1000
+print(length(sim_results))
+
+# average or expected number of cards needed to pick up to get a full deck
+print(mean(sim_results))
+
+# Minimum number of cards found to get a full deck
+print(min(sim_results))
+
+# Maximum number of cards found to get a full deck
+print(max(sim_results))
+```
+## Data Visualization
+```{r}
+hist(sim_results,
+    main = "Histogram of Number of Cards Picked Up",
+    xlab = "Number of Cards Picked Up")
+```
